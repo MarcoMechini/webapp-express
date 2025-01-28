@@ -2,12 +2,41 @@ const connection = require('../data/db')
 
 const index = (req, res) => {
 
-    const sql = `SELECT * FROM movies`
+    let sql = `SELECT * FROM movies`
+    const filter = req.query;
+    console.log(req.query);
 
-    connection.query(sql, (err, results) => {
+    const params = [];
+    const conditions = [];
+
+    if (filter.search) {
+        conditions.push('title LIKE ?')
+        params.push(`%${filter.search}%`)
+    }
+
+    // if (filter.genre) {
+    //     conditions.push("genre = ?");
+    //     params.push(filter.genre);
+    // }
+
+    for (const key in req.query) {
+        if (key !== "search") {
+            conditions.push(`${key} = ?`)
+            params.push(req.query[key])
+        }
+    }
+
+    if (conditions.length > 0) {
+        sql += ` WHERE ${conditions.join(" AND ")}`;
+    }
+
+    connection.query(sql, params, (err, results) => {
 
         if (err) return res.status(500).json({ error: 'Query non ottimale' })
-        res.json(results)
+        return res.status(200).json({
+            status: "success",
+            data: results
+        })
     })
 };
 
