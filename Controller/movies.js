@@ -74,7 +74,28 @@ const show = (req, res) => {
 
 }
 
+const create = (req, res, next) => {
+
+    const movie_id = req.params.id;
+    const { name, vote, text } = req.body;
+
+    const sql = `
+    INSERT INTO reviews(movie_id, name, vote, text)
+    VALUES (?, ?, ?, ?);
+    `
+
+    connection.query(sql, [movie_id, name, vote, text], (err, results) => {
+
+        if (err) return res.status(500).json({ error: 'Query non ottimale' })
+        return res.status(200).json({
+            status: "success",
+            data: results
+        })
+    })
+}
+
 module.exports = {
     index,
-    show
+    show,
+    create
 }

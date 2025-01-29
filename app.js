@@ -5,6 +5,7 @@ const cors = require('cors')
 const port = process.env.SERVER_PORT;
 const moviesRouter = require('./Router/movies')
 
+app.use(express.json());
 app.use(express.static('public'));
 app.use(cors({
     origin: "http://localhost:5173"

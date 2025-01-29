@@ -7,4 +7,6 @@ router.get('/', controller.index)
 
 router.get('/:id', controller.show)
 
+router.post('/:id/reviews', controller.create)
+
 module.exports = router
